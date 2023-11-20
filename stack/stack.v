@@ -8,7 +8,7 @@ output reg [7:0] data_out; /* retrieved data for pop operations, changes at pose
 output reg       full;     /* flag set when the stack is full, updated at negedge clk */ 
 output reg       empty;    /* flag set when the stack is empty, updated at negedge clk */ 
 output reg       error;    /* flag set when push is asserted if stack is full or when pop is asserted if stack is empty */ 
-//output reg [2:0] sp;
+
 reg  [7:0] RAM [0:7];      /* 8 X 8 memory module to hold stack data, changes at posedge clk */ 
 reg  [2:0] sp;             /* 3-bit wide stack pointer, updated at negative edges of the clock */ 
 wire [7:0] dout;           /* dout is always equal to RAM[sp] */ 
@@ -21,15 +21,27 @@ parameter CLEAR = 1;
 parameter PUSH  = 2;
 parameter POP	= 3;
 
-integer i;
-
 assign dout = RAM[sp];
 
 // data in & out
+integer i;
+always@(posedge clk) begin
+	/*
+	if(reset) begin
+		for(i=0; i<8; i=i+1) begin
+			RAM[sp] <= 8'd0;
+		end
+	end
+	else */
+	if(cmd == PUSH && (full == 1'b0)) begin
+		RAM[sp] <= data_in;
+	end
+end
+
 always@(posedge clk) begin
 	data_out <= dout;
-	if(cmd == PUSH) RAM[sp] <= (full != 1'b1) ? data_in : RAM[sp];
 end
+
 
 // FSM
 always@(negedge clk) begin
@@ -62,13 +74,13 @@ always@(*) begin
 				next_error = 1'b0;
 			end
 			else if(sp <= 3'b110) begin
-				next_sp    = sp + 1;
+				next_sp    = sp + 3'd1;
 				next_full  = 1'b0;
 				next_empty = 1'b0;
 				next_error = 1'b0;
 			end
 			else if(sp == 3'b111) begin
-				next_sp   = sp + 1;
+				next_sp    = sp + 3'd1;
 				next_full  = 1'b1;
 				next_empty = 1'b0;
 				next_error = 1'b0;
@@ -88,13 +100,13 @@ always@(*) begin
 				next_error = 1'b1;
 			end
 			else if(sp >= 3'b001) begin
-				next_sp    = sp - 1;
+				next_sp    = sp - 3'd1;
 				next_full  = 1'b0;
 				next_empty = 1'b0;
 				next_error = 1'b0;
 			end
 			else if(sp == 3'b000) begin
-				next_sp   = sp - 1;
+				next_sp    = sp - 3'd1;
 				next_full  = 1'b0;
 				next_empty = 1'b1;
 				next_error = 1'b0;

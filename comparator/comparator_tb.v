@@ -9,12 +9,16 @@ comparator comparator(.a(a), .b(b), .a_gt_b(a_gt_b), .a_eq_b(a_eq_b), .a_lt_b(a_
 initial begin
 	a = 16'h04F8;
 	b = 16'h04f7;
+	
 	#10 
 	b = 16'h04FA;
+	
 	#10 
 	a = 16'h04FA;
+	
 	#10 
 	b = 16'h24FA;
+	
 	#20 
 	$finish;
 end

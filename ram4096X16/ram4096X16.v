@@ -32,26 +32,15 @@ input [9:0] addr;
 inout [7:0] data; /* external I/O node, bidirectional */
 
 reg [7:0] ram [0:1023];
-integer i;
 wire [7:0] dout; /* internal node, uni-directional */
 
-assign data = (!cs)&&(!rw) ? dout : 8'bzzzz_zzzz;
+assign data = (!cs) && (!rw) ? dout : 8'bzzzz_zzzz;
 assign dout = ram[addr];
 
+integer i;
 always@(posedge clk) begin
-	if(cs)
-		for(i = 0 ; i < 1024 ; i = i + 1) begin
-			ram[i] <= ram[i];
-		end
-	else begin
-		if(rw) begin // rw = 1 : wirite
-			ram[addr] <= data;
-		end
-		else begin  // rw = 0 : read
-			for(i = 0 ; i < 1024 ; i = i + 1) begin
-				ram[i] <= ram[i];
-			end
-		end
+	if(~cs && rw) begin // rw = 1 : wirite, cs = 1 : out high z
+		ram[addr] <= data;
 	end	
 end
 

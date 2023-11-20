@@ -10,8 +10,7 @@ always #5 clk = ~clk;
 
 initial clk    <= 1'b0;
 	
-initial 
-begin
+initial begin
 	sig_in <= #0  1'b0;
 	sig_in <= #8  1'b1;
 	sig_in <= #11 1'b0;
@@ -27,6 +26,7 @@ begin
 	sig_in <= #86 1'b0;
 	sig_in <= #88 1'b1;
 	sig_in <= #91 1'b0;
+	
 	#200 $finish;
 end
 

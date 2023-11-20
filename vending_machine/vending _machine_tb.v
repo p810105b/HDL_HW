@@ -2,10 +2,10 @@
 module vending_machine_tb;
 
 reg clk, reset, dollar_10, dollar_50, sel;
-reg [1:0]item;
+reg [1:0] item;
 
-wire [3:0]price;
-wire [2:0]item_rels;
+wire [3:0] price;
+wire [2:0] item_rels;
 wire change_return;
 
 vending_machine vending_machine(.clk(clk), 
@@ -28,11 +28,13 @@ initial begin
 	sel       <= 1'b0;
 	dollar_10 <= 1'b0;
 	dollar_50 <= 1'b0;
-	
+end
+
+initial begin
 	reset <= #5   1'b1;
 	reset <= #15  1'b0;
 	reset <= #305 1'b1;
-	reset <= #315  1'b0;
+	reset <= #315 1'b0;
 	
 	item  <= #25  2'b01;
 	item  <= #35  2'b10;
@@ -72,9 +74,5 @@ initial begin
 	
 	#350 $finish;
 end
+
 endmodule
-
-	
-
-
-
